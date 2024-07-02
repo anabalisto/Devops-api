@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
   CloudFormation template to launch a simple EC2 instance in the default VPC with Ubuntu AMI (ami-04b70fa74e45c3917) and t2.micro instance type, including AutoScalingGroup, Load Balancer, Listener, and Target Group.
-  These resources are provisioned in the region [N.Veginia]
+  These resources are provisioned in the region [N.Verginia]
 
 Parameters:
   KeyName:
@@ -154,7 +154,7 @@ Resources:
   MyTargetGroup:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
     Properties:
-      Name: "myTargetGroup"
+      Name: "listTargetGroup"
       VpcId: !Ref VPC
       Port: 80
       Protocol: HTTP
@@ -186,8 +186,8 @@ Resources:
   MyLoadBalancerListenerHTTPS:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
-      Certificates:
-        - CertificateArn: !Ref SSLCertificateArn
+      # Certificates:
+        # - CertificateArn: !Ref SSLCertificateArn
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref MyTargetGroup
@@ -219,7 +219,7 @@ Resources:
                   - "acm:DescribeCertificate"
                   - "acm:GetCertificate"
                   - "acm:ListCertificates"
-                Resource: !Ref SSLCertificateArn
+                # Resource: !Ref SSLCertificateArn
 
   # IAM Instance Profile
   IAMInstanceProfile:
@@ -306,4 +306,4 @@ Outputs:
 
   LoadBalancerDNSName:
     Description: DNS Name of the Load Balancer
-    Value: !GetAtt MyLoadBalancer.DNSName
+    Value: !GetAtt listLoadBalancer.DNSName
