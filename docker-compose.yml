@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - todo-api
+    networks:
+      - webnet
+   
+  todo-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile  # Specify your Dockerfile name if not named 'Dockerfile'
+ #  container_name: todo-api
+    # volumes:
+    #   - ./:app
+    ports:
+      - "8000:8000"
+    networks:
+      - webnet
+    depends_on:
+      - my-postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@my-postgres:5432/postgres  # Adjust database URL as per your Django settings
+
+  my-postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  postgres_data:
