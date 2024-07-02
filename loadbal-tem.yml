@@ -18,12 +18,12 @@ Parameters:
   PublicSubnet1Cidr:
     Description: The CIDR block for the first public subnet
     Type: String
-    Default: 10.0.6.0/24 # Adjust the CIDR block for the first public subnet as needed
+    Default: 10.0.0.0/20 # Adjust the CIDR block for the first public subnet as needed
 
   PublicSubnet2Cidr:
     Description: The CIDR block for the second public subnet
     Type: String
-    Default: 10.0.7.0/24 # Adjust the CIDR block for the second public subnet as needed
+    Default: 10.0.16.0/20 # Adjust the CIDR block for the second public subnet as needed
 
   # SSLCertificateArn:
   #   Description: The ARN of the SSL certificate to use for the HTTPS listener
@@ -136,7 +136,7 @@ Resources:
   MyLoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
-      Name: "myLoadBalancer"
+      Name: "listLoadBalancer"
       Subnets:
         - !Ref PublicSubnet1
         - !Ref PublicSubnet2
@@ -306,4 +306,4 @@ Outputs:
 
   LoadBalancerDNSName:
     Description: DNS Name of the Load Balancer
-    Value: !GetAtt myLoadBalancer.DNSName
+    Value: !GetAtt listLoadBalancer.DNSName
