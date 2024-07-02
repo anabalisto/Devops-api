@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-  CloudFormation template to launch a simple EC2 instance in the default VPC with Ubuntu AMI (ami-053a617c6207ecc7b) and t2.micro instance type, including AutoScalingGroup, Load Balancer, Listener, and Target Group.
-  These resources are provisioned in the region [London]
+  CloudFormation template to launch a simple EC2 instance in the default VPC with Ubuntu AMI (ami-04b70fa74e45c3917) and t2.micro instance type, including AutoScalingGroup, Load Balancer, Listener, and Target Group.
+  These resources are provisioned in the region [N.Veginia]
 
 Parameters:
   KeyName:
     Description: The name of an existing EC2 Key Pair to allow SSH access to the instance
     Type: AWS::EC2::KeyPair::KeyName
-    Default: qatest
+    Default: listo
     ConstraintDescription: Must be the name of an existing EC2 KeyPair.
 
   VpcCidr:
@@ -25,10 +25,10 @@ Parameters:
     Type: String
     Default: 10.0.7.0/24 # Adjust the CIDR block for the second public subnet as needed
 
-  SSLCertificateArn:
-    Description: The ARN of the SSL certificate to use for the HTTPS listener
-    Type: String
-    Default: arn:aws:acm:eu-west-2:001526952227:certificate/39c0a27b-b964-4551-ad73-5c827220747f
+  # SSLCertificateArn:
+  #   Description: The ARN of the SSL certificate to use for the HTTPS listener
+  #   Type: String
+  #   Default: arn:aws:acm:eu-west-2:001526952227:certificate/39c0a27b-b964-4551-ad73-5c827220747f
 
 Resources:
   # VPC definition
@@ -40,7 +40,7 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: eyVPC # Optionally change the name tag for the VPC
+          Value: listVPC # Optionally change the name tag for the VPC
 
   # Internet Gateway definition
   InternetGateway:
@@ -48,7 +48,7 @@ Resources:
     Properties:
       Tags:
         - Key: Name
-          Value: ey-InternetGateway # Optionally change the name tag for the Internet Gateway
+          Value: list-InternetGateway # Optionally change the name tag for the Internet Gateway
 
   # Attach Internet Gateway to the VPC
   AttachGateway:
@@ -136,7 +136,7 @@ Resources:
   MyLoadBalancer:
     Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
     Properties:
-      Name: "eyLoadBalancer"
+      Name: "listLoadBalancer"
       Subnets:
         - !Ref PublicSubnet1
         - !Ref PublicSubnet2
@@ -148,13 +148,13 @@ Resources:
           Value: '60'
       Tags:
         - Key: Name
-          Value: eyLoadBalancer
+          Value: listLoadBalancer
 
   # Target Group
   MyTargetGroup:
     Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
     Properties:
-      Name: "eyTargetGroup"
+      Name: "myTargetGroup"
       VpcId: !Ref VPC
       Port: 80
       Protocol: HTTP
@@ -169,7 +169,7 @@ Resources:
         HttpCode: 200
       Tags:
         - Key: Name
-          Value: eyTargetGroup
+          Value: listTargetGroup
 
   # HTTP Listener
   MyListener:
@@ -234,7 +234,7 @@ Resources:
     Properties:
       InstanceType: t2.micro
       KeyName: !Ref KeyName
-      ImageId: ami-053a617c6207ecc7b # Updated to match the description
+      ImageId: ami-04b70fa74e45c3917 # Updated to match the description
       SecurityGroups:
         - !Ref SecurityGroup
       IamInstanceProfile: !Ref IAMInstanceProfile
@@ -256,13 +256,13 @@ Resources:
           sudo curl -L https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
           cd /home/ubuntu
-          wget https://aws-codedeploy-us-east-2.s3.us-east-2.amazonaws.com/latest/install
+          wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
           chmod +x ./install
           sudo ./install auto
           sudo systemctl start codedeploy-agent
           sudo systemctl status codedeploy-agent
-          git clone https://github.com/Africa-Can-Do/aws-devops.git /home/ubuntu/aws-devops
-          cd /home/ubuntu/aws-devops
+          git clone https://github.com/anabalisto/devops-api.git /home/ubuntu/devops-api
+          cd /home/ubuntu/devops-api
           sudo docker-compose up --build
 
   # Auto Scaling Group
@@ -280,7 +280,7 @@ Resources:
         - !Ref MyTargetGroup
       Tags:
         - Key: Name
-          Value: eyAutoScalingInstance
+          Value: listAutoScalingInstance
           PropagateAtLaunch: true
 
 Outputs:
